@@ -1,0 +1,55 @@
+@startuml
+abstract Mpiasa {
+    anarana: String
+    fanampiny: String
+    toeranaNahaterahana: String
+    laharanTarobia: String
+}
+Mpiasa <|-- Mpiandrikitra
+Mpiasa <|-- MpamafaTrano
+Mpiasa <|-- Mpahandro
+Mpiasa <|-- Mpiambina
+Mpiasa <|-- Mpandray
+Mpiasa <|-- Irakika
+class Irakika {
+    manatitraSakafo() : void
+}
+class Kaomandy {
+    id: String
+    mpanofa: Mpanofa
+}
+Kaomandy <-- Mpanofa
+Hotely *-- Mpiasa
+Hotely *-- Efitra
+class Efitra {
+    wifi= true
+    misyMampiasa: boolean
+    mahitaRanoMasina=false : boolean
+}
+class EfitraAntonony {
+    klima: boolean
+    ranoMafana: boolean
+}
+class EfitraAvoLenta {
+    mahitaRanoMasina = true
+}
+Famandrihana *-- Efitra
+Efitra <|-- EfitraAntonony
+Efitra <|-- EfitraAvoLenta
+class Famandrihana {
+    id: String
+    datyNamandrihana: LocalDateTime
+    datyFiantombohana: LocalDateTime
+    datyFiafarana: LocalDateTime
+    mpanofa: Mpanofa
+    efitra_s: List<Efitra>
+}
+
+class Mpanofa {
+    mamandrika(): void
+    mikaomandy(): void
+}
+
+Famandrihana <-- Mpanofa
+Hotely <-- Famandrihana
+@enduml
