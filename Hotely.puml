@@ -45,7 +45,7 @@ class Famandrihana {
     efitra_s: List<Efitra>
 }
 
-class Mpanofa {
+class Mpanjifa {
     mamandrika(): void
     mikaomandy(): void
 }
