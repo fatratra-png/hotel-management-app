@@ -22,9 +22,9 @@ Kaomandy <-- Mpanofa
 Hotely *-- Mpiasa
 Hotely *-- Efitra
 class Efitra {
-    wifi= true
+    wifi: boolean = true
     misyMampiasa: boolean
-    mahitaRanoMasina=false : boolean
+    mahitaRanoMasina: boolean = false
 }
 class EfitraAntonony {
     klima: boolean
