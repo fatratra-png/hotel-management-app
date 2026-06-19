@@ -1,4 +1,4 @@
-package origa.hotel;
+package org.hotel;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

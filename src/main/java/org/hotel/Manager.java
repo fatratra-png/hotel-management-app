@@ -1,4 +1,4 @@
-package origa.hotel;
+package org.hotel;
 
 import java.time.LocalDateTime;
 
