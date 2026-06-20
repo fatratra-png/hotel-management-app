@@ -1,19 +1,30 @@
 package org.hotel;
 
-import lombok.Getter;
-
 import java.time.LocalDateTime;
 
-@Getter
+import lombok.Getter;
 
+@Getter
 public class Housekeeper extends Employee {
 
-    public Housekeeper(String id, String name, String surname, LocalDateTime dateOfBirth, String placeOfBirth, String phoneNumber, Hotel hotel) {
-        super(id, name, surname, dateOfBirth, Job.HOUSEKEEPER, placeOfBirth, phoneNumber, hotel);
-    }
+  public Housekeeper(
+      String id,
+      String name,
+      String surname,
+      LocalDateTime dateOfBirth,
+      String placeOfBirth,
+      String phoneNumber,
+      Hotel hotel) {
+    super(id, name, surname, dateOfBirth, Job.HOUSEKEEPER, placeOfBirth, phoneNumber, hotel);
+  }
 
-    @Override
-    public String work(){
-            return getName() + " is cleaning rooms";
-    }
+  @Override
+  public String work() {
+    return getName() + " is cleaning rooms";
+  }
+
+  @Override
+  public int countWorkHour() {
+    return 10;
+  }
 }
