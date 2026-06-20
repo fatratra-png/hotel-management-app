@@ -1,0 +1,55 @@
+@startuml
+abstract Employee {
+    name: String
+    surname: String
+    placeOfBirth: String
+    phoneNumber: String
+}
+Employee <|-- Manager
+Employee <|-- Housekeeper
+Employee <|-- Cook
+Employee <|-- Guard
+Employee <|-- Receptionist
+Employee <|-- Server
+class Server {
+    deliverFood() : void
+}
+class Order {
+    id: String
+    guest: Guest
+}
+Order <-- Guest
+Hotel *-- Employee
+Hotel *-- Room
+class Room {
+    wifi: boolean = true
+    isOccupied: boolean
+    hasSeaView: boolean = false
+}
+class MidRoom {
+    hasAC: boolean
+    hasHotWater: boolean
+}
+class LuxuryRoom {
+    hasSeaView = true
+}
+Booking *-- Room
+Room <|-- MidRoom
+Room <|-- LuxuryRoom
+class Booking {
+    id: String
+    bookingDate: LocalDateTime
+    startDate: LocalDateTime
+    endDate: LocalDateTime
+    guest: Guest
+    rooms: List<Room>
+}
+
+class Guest {
+    book(): void
+    order(): void
+}
+
+Booking <-- Guest
+Hotel <-- Booking
+@enduml
