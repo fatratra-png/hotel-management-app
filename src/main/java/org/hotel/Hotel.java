@@ -81,6 +81,16 @@ public class Hotel {
         }
     }
 
+    public List<Room> getAvailableRooms() {
+        List<Room> available = new ArrayList<>();
+        for (Room room : rooms) {
+            if (!room.isOccupied()) {
+                available.add(room);
+            }
+        }
+        return available;
+    }
+
     private Cook findAvailableCook() {
         for (Employee emp : employees) {
             if (emp instanceof Cook) {
