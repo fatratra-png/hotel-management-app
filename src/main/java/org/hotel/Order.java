@@ -2,6 +2,7 @@ package org.hotel;
 
 import lombok.Getter;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,6 +33,23 @@ public class Order {
             this.deliveredAt = LocalDateTime.now();
         }
     }
+
+    public Duration getElapsedTime() {
+        LocalDateTime end = (deliveredAt != null) ? deliveredAt : LocalDateTime.now();
+        return Duration.between(orderedAt, end);
+    }
+
+    public boolean isActive() {
+        return status != OrderStatus.DELIVERED && status != OrderStatus.CANCELLED;
+    }
+
+    public void cancel() {
+        if (this.status == OrderStatus.DELIVERED) {
+            throw new IllegalStateException("It is not possible to cancel an order that has already been delivered.");
+        }
+        this.status = OrderStatus.CANCELLED;
+    }
+
 
     public void setPreparedBy(Employee cook) {
         this.preparedBy = cook;
