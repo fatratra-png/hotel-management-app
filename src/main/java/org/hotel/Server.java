@@ -14,7 +14,7 @@ public class Server extends Employee {
       String placeOfBirth,
       String phoneNumber,
       Hotel hotel) {
-    super(id, name, surname, dateOfBirth, Job.SERVER, placeOfBirth, phoneNumber, hotel);
+    super(id, name, surname, dateOfBirth, Job.SERVER, placeOfBirth, phoneNumber, hotel,2000.0);
   }
 
   public void deliver(Order order) {
