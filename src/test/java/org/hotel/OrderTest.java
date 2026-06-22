@@ -68,4 +68,53 @@ public class OrderTest {
         assertEquals(cook, order.getPreparedBy());
         assertEquals(server, order.getDeliveredBy());
     }
+
+    @Test
+    public void testIsActiveForNonFinalStatuses() {
+        Order order = new Order("o8", new Guest("g11", "Lee"), new StandardRoom(), java.util.List.of("x"));
+        assertTrue(order.isActive());
+        order.setStatus(OrderStatus.PREPARING);
+        assertTrue(order.isActive());
+        order.setStatus(OrderStatus.READY);
+        assertTrue(order.isActive());
+    }
+
+    @Test
+    public void testIsActiveFalseAfterDelivered() {
+        Order order = new Order("o9", new Guest("g12", "Lee"), new StandardRoom(), java.util.List.of("x"));
+        order.setStatus(OrderStatus.DELIVERED);
+        assertFalse(order.isActive());
+    }
+
+    @Test
+    public void testIsActiveFalseAfterCancelled() {
+        Order order = new Order("o10", new Guest("g13", "Lee"), new StandardRoom(), java.util.List.of("x"));
+        order.cancel();
+        assertFalse(order.isActive());
+        assertEquals(OrderStatus.CANCELLED, order.getStatus());
+    }
+
+    @Test
+    public void testCancelThrowsWhenAlreadyDelivered() {
+        Order order = new Order("o11", new Guest("g14", "Lee"), new StandardRoom(), java.util.List.of("x"));
+        order.setStatus(OrderStatus.DELIVERED);
+        assertThrows(IllegalStateException.class, order::cancel);
+    }
+
+    @Test
+    public void testGetElapsedTimeBeforeDeliveryIsPositive() {
+        Order order = new Order("o12", new Guest("g15", "Lee"), new StandardRoom(), java.util.List.of("x"));
+        java.time.Duration elapsed = order.getElapsedTime();
+        assertFalse(elapsed.isNegative());
+    }
+
+    @Test
+    public void testGetElapsedTimeAfterDeliveryIsFixed() throws InterruptedException {
+        Order order = new Order("o13", new Guest("g16", "Lee"), new StandardRoom(), java.util.List.of("x"));
+        order.setStatus(OrderStatus.DELIVERED);
+        java.time.Duration elapsedFirst = order.getElapsedTime();
+        Thread.sleep(50);
+        java.time.Duration elapsedSecond = order.getElapsedTime();
+        assertEquals(elapsedFirst, elapsedSecond);
+    }
 }

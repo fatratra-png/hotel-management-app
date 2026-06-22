@@ -1,5 +1,5 @@
 package org.hotel;
 
 public enum OrderStatus {
-    PLACED, PREPARING, READY, DELIVERED
+    PLACED, PREPARING, READY, DELIVERED, CANCELLED
 }
