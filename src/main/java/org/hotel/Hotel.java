@@ -95,6 +95,17 @@ public class Hotel {
         return reservations.get(guest);
     }
 
+
+    public List<Order> getOrdersByStatus(OrderStatus status) {
+        List<Order> result = new ArrayList<>();
+        for (Order order : orders) {
+            if (order.getStatus() == status) {
+                result.add(order);
+            }
+        }
+        return result;
+    }
+
     private Cook findAvailableCook() {
         for (Employee emp : employees) {
             if (emp instanceof Cook) {
