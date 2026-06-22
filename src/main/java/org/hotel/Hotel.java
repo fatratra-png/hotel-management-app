@@ -91,6 +91,10 @@ public class Hotel {
         return available;
     }
 
+    public Room getRoomOf(Guest guest) {
+        return reservations.get(guest);
+    }
+
     private Cook findAvailableCook() {
         for (Employee emp : employees) {
             if (emp instanceof Cook) {
