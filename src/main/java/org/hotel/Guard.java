@@ -11,7 +11,7 @@ public class Guard extends Employee {
       String placeOfBirth,
       String phoneNumber,
       Hotel hotel) {
-    super(id, name, surname, dateOfBirth, Job.GUARD, placeOfBirth, phoneNumber, hotel);
+    super(id, name, surname, dateOfBirth, Job.GUARD, placeOfBirth, phoneNumber, hotel,2000.0);
   }
 
   @Override

@@ -15,7 +15,7 @@ public class Housekeeper extends Employee {
       String placeOfBirth,
       String phoneNumber,
       Hotel hotel) {
-    super(id, name, surname, dateOfBirth, Job.HOUSEKEEPER, placeOfBirth, phoneNumber, hotel);
+    super(id, name, surname, dateOfBirth, Job.HOUSEKEEPER, placeOfBirth, phoneNumber, hotel,2000.0);
   }
 
   @Override
