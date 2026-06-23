@@ -11,11 +11,11 @@ public class EmployeeAndOrderTest {
 
     @Test
     public void testEmployeeAddRemoveAndCounts() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,new HashSet<>());
+        var hotel = new Hotel("H","L","A","P",4,10,new HashSet<>());
 
-        Cook cook = new Cook("c2","C","S",LocalDateTime.now(),"PB","000",hotel);
-        Server server = new Server("s2","S","T",LocalDateTime.now(),"PB","111",hotel);
-        Manager manager = new Manager("m2","M","N",LocalDateTime.now(),"PB","222",hotel);
+        var cook = new Cook("c2","C","S",LocalDateTime.now(),"PB","000",hotel);
+        var server = new Server("s2","S","T",LocalDateTime.now(),"PB","111",hotel);
+        var manager = new Manager("m2","M","N",LocalDateTime.now(),"PB","222",hotel);
 
         hotel.addEmployee(cook);
         hotel.addEmployee(server);
@@ -31,8 +31,8 @@ public class EmployeeAndOrderTest {
 
     @Test
     public void testRemovingUnknownEmployeeDoesNotChangeCount() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,new HashSet<>());
-        Cook cook = new Cook("c3","C","S",LocalDateTime.now(),"PB","000",hotel);
+        var hotel = new Hotel("H","L","A","P",4,10,new HashSet<>());
+        var cook = new Cook("c3","C","S",LocalDateTime.now(),"PB","000",hotel);
         hotel.addEmployee(cook);
 
         hotel.removeEmployee("missing");
@@ -43,8 +43,8 @@ public class EmployeeAndOrderTest {
 
     @Test
     public void testAddingSameEmployeeInstanceTwiceIsNotDuplicated() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,new HashSet<>());
-        Cook cook = new Cook("c4","C","S",LocalDateTime.now(),"PB","000",hotel);
+        var hotel = new Hotel("H","L","A","P",4,10,new HashSet<>());
+        var cook = new Cook("c4","C","S",LocalDateTime.now(),"PB","000",hotel);
 
         hotel.addEmployee(cook);
         hotel.addEmployee(cook);
@@ -54,24 +54,24 @@ public class EmployeeAndOrderTest {
 
     @Test
     public void testCountEmployeesByMissingJobReturnsZero() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,new HashSet<>());
+        var hotel = new Hotel("H","L","A","P",4,10,new HashSet<>());
 
         assertEquals(0, hotel.countEmployeesByJob(Job.GUARD));
     }
 
     @Test
     public void testOrderStatusTransitions() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,null);
-        Room room = new StandardRoom();
+        var hotel = new Hotel("H","L","A","P",4,10,null);
+        var room = new StandardRoom();
         hotel.addRoom(room);
-        Guest guest = new Guest("g9","Anna");
+        var guest = new Guest("g9","Anna");
         hotel.register(guest);
         hotel.book(guest, room);
 
-        Order order = new Order("o9", guest, room, java.util.List.of("item1"));
+        var order = new Order("o9", guest, room, java.util.List.of("item1"));
         assertEquals(OrderStatus.PLACED, order.getStatus());
 
-        Cook cook = new Cook("c9","Chef","X",LocalDateTime.now(),"PB","000",hotel);
+        var cook = new Cook("c9","Chef","X",LocalDateTime.now(),"PB","000",hotel);
         order.setPreparedBy(cook);
         order.setStatus(OrderStatus.PREPARING);
         assertEquals(OrderStatus.PREPARING, order.getStatus());
@@ -79,7 +79,7 @@ public class EmployeeAndOrderTest {
         order.setStatus(OrderStatus.READY);
         assertEquals(OrderStatus.READY, order.getStatus());
 
-        Server server = new Server("s9","Serv","Y",LocalDateTime.now(),"PB","111",hotel);
+        var server = new Server("s9","Serv","Y",LocalDateTime.now(),"PB","111",hotel);
         order.setDeliveredBy(server);
         order.setStatus(OrderStatus.DELIVERED);
         assertEquals(OrderStatus.DELIVERED, order.getStatus());
@@ -88,7 +88,7 @@ public class EmployeeAndOrderTest {
 
     @Test
     public void testDeliveredAtIsOnlySetWhenDelivered() {
-        Order order = new Order("o10", new Guest("g10","Anna"), new StandardRoom(), java.util.List.of("item1"));
+        var order = new Order("o10", new Guest("g10","Anna"), new StandardRoom(), java.util.List.of("item1"));
 
         order.setStatus(OrderStatus.PREPARING);
         order.setStatus(OrderStatus.READY);

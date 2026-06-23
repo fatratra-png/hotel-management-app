@@ -10,8 +10,8 @@ public class EmployeeTest {
 
     @Test
     public void testEmployeeCommonCalculations() {
-        Hotel hotel = new Hotel("H","L","A","P",4,5,null);
-        Manager m = new Manager("m100","John","Doe", LocalDateTime.now(), "PB", "000", hotel);
+        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var m = new Manager("m100","John","Doe", LocalDateTime.now(), "PB", "000", hotel);
         m.addBonus(50);
         double salary = m.countSalaryByHour(20, 5);
         assertEquals(100, salary);
@@ -29,8 +29,8 @@ public class EmployeeTest {
 
     @Test
     public void testBonusAccumulatesOnCurrentSalary() {
-        Hotel hotel = new Hotel("H","L","A","P",4,5,null);
-        Manager manager = new Manager("m101","John","Doe", LocalDateTime.now(), "PB", "000", hotel);
+        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var manager = new Manager("m101","John","Doe", LocalDateTime.now(), "PB", "000", hotel);
 
         manager.addBonus(50);
         manager.addBonus(25);
@@ -40,8 +40,8 @@ public class EmployeeTest {
 
     @Test
     public void testCountSalaryByHourReplacesPreviousSalary() {
-        Hotel hotel = new Hotel("H","L","A","P",4,5,null);
-        Manager manager = new Manager("m102","John","Doe", LocalDateTime.now(), "PB", "000", hotel);
+        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var manager = new Manager("m102","John","Doe", LocalDateTime.now(), "PB", "000", hotel);
         manager.addBonus(500);
 
         manager.countSalaryByHour(15, 10);
@@ -51,8 +51,8 @@ public class EmployeeTest {
 
     @Test
     public void testZeroTaxKeepsNetSalaryEqualToGrossSalary() {
-        Hotel hotel = new Hotel("H","L","A","P",4,5,null);
-        Manager manager = new Manager("m103","John","Doe", LocalDateTime.now(), "PB", "000", hotel);
+        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var manager = new Manager("m103","John","Doe", LocalDateTime.now(), "PB", "000", hotel);
         manager.countSalaryByHour(30, 8);
 
         assertEquals(0, manager.calculateDeductions(0));

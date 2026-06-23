@@ -8,14 +8,14 @@ public class MidRoomTest {
 
     @Test
     public void testMidRoomHasAC() {
-        MidRoom mr = new MidRoom();
+        var mr = new MidRoom();
         assertTrue(mr.isHasAC());
         assertFalse(mr.isHasSeaView());
     }
 
     @Test
     public void testMidRoomKeepsBaseRoomDefaults() {
-        MidRoom room = new MidRoom();
+        var room = new MidRoom();
 
         assertTrue(room.isHasWiFi());
         assertFalse(room.isOccupied());
@@ -24,7 +24,7 @@ public class MidRoomTest {
 
     @Test
     public void testMidRoomCanBeMarkedOccupied() {
-        MidRoom room = new MidRoom();
+        var room = new MidRoom();
 
         room.setOccupied(true);
 

@@ -10,11 +10,11 @@ public class HotelTest {
 
     @Test
     public void testReserveAndOrderAndDeliverFlow() {
-        Hotel hotel = new Hotel("H", "L", "A", "P", 4, 10, null);
-        Room room = new StandardRoom();
+        var hotel = new Hotel("H", "L", "A", "P", 4, 10, null);
+        var room = new StandardRoom();
         hotel.addRoom(room);
 
-        Guest guest = new Guest("g1", "Alice");
+        var guest = new Guest("g1", "Alice");
         hotel.register(guest);
 
         hotel.book(guest, room);
@@ -25,8 +25,8 @@ public class HotelTest {
         assertNotNull(order);
         assertEquals(OrderStatus.PLACED, order.getStatus());
 
-        Cook cook = new Cook("c1", "Cooky", "S", LocalDateTime.now(), "PB", "000", hotel);
-        Server server = new Server("s1", "Serve", "T", LocalDateTime.now(), "PB", "111", hotel);
+        var cook = new Cook("c1", "Cooky", "S", LocalDateTime.now(), "PB", "000", hotel);
+        var server = new Server("s1", "Serve", "T", LocalDateTime.now(), "PB", "111", hotel);
         hotel.addEmployee(cook);
         hotel.addEmployee(server);
 
@@ -47,8 +47,8 @@ public class HotelTest {
 
     @Test
     public void testConstructorAcceptsStarCountBoundaries() {
-        Hotel zeroStar = new Hotel("H","L","A","P", 0, 5, null);
-        Hotel fiveStar = new Hotel("H","L","A","P", 5, 5, null);
+        var zeroStar = new Hotel("H","L","A","P", 0, 5, null);
+        var fiveStar = new Hotel("H","L","A","P", 5, 5, null);
 
         assertEquals(0, zeroStar.getStarCount());
         assertEquals(5, fiveStar.getStarCount());
@@ -56,10 +56,10 @@ public class HotelTest {
 
     @Test
     public void testReserveOccupiedRoomThrowsAndDoesNotBookSecondGuest() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,null);
-        Room room = new StandardRoom();
-        Guest first = new Guest("g1", "Alice");
-        Guest second = new Guest("g2", "Bob");
+        var hotel = new Hotel("H","L","A","P",4,10,null);
+        var room = new StandardRoom();
+        var first = new Guest("g1", "Alice");
+        var second = new Guest("g2", "Bob");
         hotel.reserveRoom(first, room);
 
         assertThrows(IllegalStateException.class, () -> hotel.reserveRoom(second, room));
@@ -69,8 +69,8 @@ public class HotelTest {
 
     @Test
     public void testCommandToRoomWithoutReservationThrows() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,null);
-        Guest guest = new Guest("g1", "Alice");
+        var hotel = new Hotel("H","L","A","P",4,10,null);
+        var guest = new Guest("g1", "Alice");
 
         assertThrows(IllegalStateException.class, () -> hotel.commandToRoom(guest, List.of("coffee")));
         assertTrue(hotel.getOrders().isEmpty());
@@ -78,9 +78,9 @@ public class HotelTest {
 
     @Test
     public void testCommandToRoomStoresOrderWithGeneratedEightCharacterId() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,null);
-        Room room = new StandardRoom();
-        Guest guest = new Guest("g1", "Alice");
+        var hotel = new Hotel("H","L","A","P",4,10,null);
+        var room = new StandardRoom();
+        var guest = new Guest("g1", "Alice");
         hotel.reserveRoom(guest, room);
 
         Order order = hotel.commandToRoom(guest, List.of("coffee"));
@@ -92,10 +92,10 @@ public class HotelTest {
 
     @Test
     public void testDeliverToRoomWithoutStaffLeavesOrderPlaced() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,null);
-        Room room = new StandardRoom();
-        Guest guest = new Guest("g1", "Alice");
-        Order order = new Order("o1", guest, room, List.of("coffee"));
+        var hotel = new Hotel("H","L","A","P",4,10,null);
+        var room = new StandardRoom();
+        var guest = new Guest("g1", "Alice");
+        var order = new Order("o1", guest, room, List.of("coffee"));
 
         hotel.deliverToRoom(order);
 
@@ -107,9 +107,9 @@ public class HotelTest {
 
     @Test
     public void testDeliverToRoomWithOnlyCookPreparesButDoesNotDeliver() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,null);
-        Cook cook = new Cook("c1", "Cooky", "S", LocalDateTime.now(), "PB", "000", hotel);
-        Order order = new Order("o1", new Guest("g1", "Alice"), new StandardRoom(), List.of("coffee"));
+        var hotel = new Hotel("H","L","A","P",4,10,null);
+        var cook = new Cook("c1", "Cooky", "S", LocalDateTime.now(), "PB", "000", hotel);
+        var order = new Order("o1", new Guest("g1", "Alice"), new StandardRoom(), List.of("coffee"));
         hotel.addEmployee(cook);
 
         hotel.deliverToRoom(order);
@@ -121,10 +121,10 @@ public class HotelTest {
 
     @Test
     public void testDeliverToRoomWithOnlyServerDeliversWithoutPreparedBy() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,null);
-        Server server = new Server("s1", "Serve", "T", LocalDateTime.now(), "PB", "111", hotel);
-        Room room = new StandardRoom();
-        Order order = new Order("o1", new Guest("g1", "Alice"), room, List.of("coffee"));
+        var hotel = new Hotel("H","L","A","P",4,10,null);
+        var server = new Server("s1", "Serve", "T", LocalDateTime.now(), "PB", "111", hotel);
+        var room = new StandardRoom();
+        var order = new Order("o1", new Guest("g1", "Alice"), room, List.of("coffee"));
         hotel.addEmployee(server);
 
         hotel.deliverToRoom(order);
@@ -137,9 +137,9 @@ public class HotelTest {
 
     @Test
     public void testRegisterAndAddRoomStoreUniqueInstances() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,null);
-        Guest guest = new Guest("g1", "Alice");
-        Room room = new StandardRoom();
+        var hotel = new Hotel("H","L","A","P",4,10,null);
+        var guest = new Guest("g1", "Alice");
+        var room = new StandardRoom();
 
         hotel.register(guest);
         hotel.register(guest);
@@ -152,13 +152,13 @@ public class HotelTest {
 
     @Test
     public void testGetAvailableRoomsExcludesOccupiedRooms() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,null);
-        Room available = new StandardRoom();
-        Room occupied = new StandardRoom();
+        var hotel = new Hotel("H","L","A","P",4,10,null);
+        var available = new StandardRoom();
+        var occupied = new StandardRoom();
         hotel.addRoom(available);
         hotel.addRoom(occupied);
 
-        Guest guest = new Guest("g1", "Alice");
+        var guest = new Guest("g1", "Alice");
         hotel.reserveRoom(guest, occupied);
 
         List<Room> result = hotel.getAvailableRooms();
@@ -170,8 +170,8 @@ public class HotelTest {
 
     @Test
     public void testGetAvailableRoomsReturnsEmptyWhenAllOccupied() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,null);
-        Room room = new StandardRoom();
+        var hotel = new Hotel("H","L","A","P",4,10,null);
+        var room = new StandardRoom();
         hotel.addRoom(room);
         hotel.reserveRoom(new Guest("g1", "Alice"), room);
 
@@ -180,16 +180,16 @@ public class HotelTest {
 
     @Test
     public void testGetAvailableRoomsReturnsEmptyWhenNoRoomsAdded() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,null);
+        var hotel = new Hotel("H","L","A","P",4,10,null);
 
         assertTrue(hotel.getAvailableRooms().isEmpty());
     }
 
     @Test
     public void testGetRoomOfReturnsReservedRoom() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,null);
-        Room room = new StandardRoom();
-        Guest guest = new Guest("g1", "Alice");
+        var hotel = new Hotel("H","L","A","P",4,10,null);
+        var room = new StandardRoom();
+        var guest = new Guest("g1", "Alice");
         hotel.reserveRoom(guest, room);
 
         assertEquals(room, hotel.getRoomOf(guest));
@@ -197,17 +197,17 @@ public class HotelTest {
 
     @Test
     public void testGetRoomOfReturnsNullWhenGuestHasNoReservation() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,null);
-        Guest guest = new Guest("g1", "Alice");
+        var hotel = new Hotel("H","L","A","P",4,10,null);
+        var guest = new Guest("g1", "Alice");
 
         assertNull(hotel.getRoomOf(guest));
     }
 
     @Test
     public void testGetOrdersByStatusReturnsOnlyMatchingOrders() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,null);
-        Room room = new StandardRoom();
-        Guest guest = new Guest("g1", "Alice");
+        var hotel = new Hotel("H","L","A","P",4,10,null);
+        var room = new StandardRoom();
+        var guest = new Guest("g1", "Alice");
         hotel.reserveRoom(guest, room);
 
         Order placedOrder = hotel.commandToRoom(guest, List.of("coffee"));
@@ -225,9 +225,9 @@ public class HotelTest {
 
     @Test
     public void testGetOrdersByStatusReturnsEmptyWhenNoneMatch() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,null);
-        Room room = new StandardRoom();
-        Guest guest = new Guest("g1", "Alice");
+        var hotel = new Hotel("H","L","A","P",4,10,null);
+        var room = new StandardRoom();
+        var guest = new Guest("g1", "Alice");
         hotel.reserveRoom(guest, room);
         hotel.commandToRoom(guest, List.of("coffee"));
 
@@ -238,7 +238,7 @@ public class HotelTest {
 
     @Test
     public void testGetOrdersByStatusReturnsEmptyWhenNoOrdersExist() {
-        Hotel hotel = new Hotel("H","L","A","P",4,10,null);
+        var hotel = new Hotel("H","L","A","P",4,10,null);
 
         assertTrue(hotel.getOrdersByStatus(OrderStatus.PLACED).isEmpty());
     }

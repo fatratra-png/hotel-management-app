@@ -8,14 +8,14 @@ public class LuxuryRoomTest {
 
     @Test
     public void testLuxuryRoomHasACAndSeaView() {
-        LuxuryRoom lr = new LuxuryRoom();
+        var lr = new LuxuryRoom();
         assertTrue(lr.isHasAC());
         assertTrue(lr.isHasSeaView());
     }
 
     @Test
     public void testLuxuryRoomKeepsBaseRoomDefaults() {
-        LuxuryRoom room = new LuxuryRoom();
+        var room = new LuxuryRoom();
 
         assertTrue(room.isHasWiFi());
         assertFalse(room.isOccupied());
@@ -24,7 +24,7 @@ public class LuxuryRoomTest {
 
     @Test
     public void testLuxuryRoomCanBeMarkedOccupied() {
-        LuxuryRoom room = new LuxuryRoom();
+        var room = new LuxuryRoom();
 
         room.setOccupied(true);
 

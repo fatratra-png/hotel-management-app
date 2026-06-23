@@ -8,7 +8,7 @@ public class StandardRoomTest {
 
     @Test
     public void testStandardRoomDefaults() {
-        StandardRoom sr = new StandardRoom();
+        var sr = new StandardRoom();
         assertTrue(sr.isHasWiFi());
         assertFalse(sr.isHasAC());
         assertFalse(sr.isHasSeaView());
@@ -16,7 +16,7 @@ public class StandardRoomTest {
 
     @Test
     public void testStandardRoomStartsUnoccupiedWithNoDeliveries() {
-        StandardRoom room = new StandardRoom();
+        var room = new StandardRoom();
 
         assertFalse(room.isOccupied());
         assertTrue(room.getDeliveries().isEmpty());
@@ -24,7 +24,7 @@ public class StandardRoomTest {
 
     @Test
     public void testStandardRoomSettersCanChangeMutableProperties() {
-        StandardRoom room = new StandardRoom();
+        var room = new StandardRoom();
 
         room.setOccupied(true);
         room.setHasWiFi(false);

@@ -10,16 +10,16 @@ public class GuardTest {
 
     @Test
     public void testGuardWorkAndHours() {
-        Hotel hotel = new Hotel("H","L","A","P",4,5,null);
-        Guard guard = new Guard("g100","Guard","X", LocalDateTime.now(), "PB", "999", hotel);
+        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var guard = new Guard("g100","Guard","X", LocalDateTime.now(), "PB", "999", hotel);
         assertTrue(guard.work().contains("guard"));
         assertEquals(12, guard.countWorkHour());
     }
 
     @Test
     public void testGuardHasExpectedJobAndDefaultSalary() {
-        Hotel hotel = new Hotel("H","L","A","P",4,5,null);
-        Guard guard = new Guard("g101","Guard","X", LocalDateTime.now(), "PB", "999", hotel);
+        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var guard = new Guard("g101","Guard","X", LocalDateTime.now(), "PB", "999", hotel);
 
         assertEquals(Job.GUARD, guard.getJob());
         assertEquals(2000, guard.getSalary());

@@ -10,15 +10,15 @@ public class GuestTest {
 
     @Test
     public void testBookAddsRoom() {
-        Guest guest = new Guest("g1", "Alice");
-        Room room = new StandardRoom();
+        var guest = new Guest("g1", "Alice");
+        var room = new StandardRoom();
         guest.book(room);
         assertTrue(guest.getBookedRooms().contains(room));
     }
 
     @Test
     public void testGuestStartsWithNoRoomsAndNoOrders() {
-        Guest guest = new Guest("g0", "Alice");
+        var guest = new Guest("g0", "Alice");
 
         assertTrue(guest.getBookedRooms().isEmpty());
         assertTrue(guest.getOrders().isEmpty());
@@ -26,10 +26,10 @@ public class GuestTest {
 
     @Test
     public void testPlaceOrderWithReservation() {
-        Hotel hotel = new Hotel("H","L","A","P",4,5,null);
-        Room r = new StandardRoom();
+        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var r = new StandardRoom();
         hotel.addRoom(r);
-        Guest guest = new Guest("g2","Bob");
+        var guest = new Guest("g2","Bob");
         hotel.register(guest);
         hotel.book(guest, r);
         Order o = guest.placeOrder("o2", List.of("tea"), hotel);
@@ -40,8 +40,8 @@ public class GuestTest {
 
     @Test
     public void testPlaceOrderWithoutReservationThrowsAndDoesNotStoreOrder() {
-        Hotel hotel = new Hotel("H","L","A","P",4,5,null);
-        Guest guest = new Guest("g3","Bob");
+        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var guest = new Guest("g3","Bob");
 
         assertThrows(IllegalStateException.class, () -> guest.placeOrder("o3", List.of("tea"), hotel));
         assertTrue(guest.getOrders().isEmpty());
@@ -49,9 +49,9 @@ public class GuestTest {
 
     @Test
     public void testPlaceOrderStoresOrderAndPreservesItems() {
-        Hotel hotel = new Hotel("H","L","A","P",4,5,null);
-        Room room = new StandardRoom();
-        Guest guest = new Guest("g4","Bob");
+        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var room = new StandardRoom();
+        var guest = new Guest("g4","Bob");
         hotel.book(guest, room);
 
         Order order = guest.placeOrder("client-id", List.of("tea", "cake"), hotel);
