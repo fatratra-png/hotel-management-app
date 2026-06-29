@@ -92,14 +92,14 @@ public class Hotel {
                 .collect(Collectors.toList());
     }
 
-    private java.util.Optional<Cook> findAvailableCook() {
+    public java.util.Optional<Cook> findAvailableCook() {
         return employees.stream()
                 .filter(emp -> emp instanceof Cook)
                 .map(emp -> (Cook) emp)
                 .findFirst();
     }
 
-    private java.util.Optional<Server> findAvailableServer() {
+    public java.util.Optional<Server> findAvailableServer() {
         return employees.stream()
                 .filter(emp -> emp instanceof Server)
                 .map(emp -> (Server) emp)
