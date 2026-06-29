@@ -1,6 +1,7 @@
 package org.hotel;
 
 import org.junit.jupiter.api.Test;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,14 +27,14 @@ public class HotelTest {
         assertEquals(OrderStatus.PLACED, order.getStatus());
 
         var cook = new Cook("c1", "Cooky", "S", LocalDateTime.now(), "PB", "000", hotel);
-        var server = new Server("s1", "Serve", "T", LocalDateTime.now(), "PB", "111", hotel);
+        var waiter = new Waiter("s1", "Serve", "T", LocalDateTime.now(), "PB", "111", hotel);
         hotel.addEmployee(cook);
-        hotel.addEmployee(server);
+        hotel.addEmployee(waiter);
 
         hotel.deliverToRoom(order);
 
         assertEquals(cook, order.getPreparedBy());
-        assertEquals(server, order.getDeliveredBy());
+        assertEquals(waiter, order.getDeliveredBy());
         assertEquals(OrderStatus.DELIVERED, order.getStatus());
         assertTrue(order.getRoom().getDeliveries().contains(order));
         assertNotNull(order.getDeliveredAt());
@@ -85,7 +86,7 @@ public class HotelTest {
 
         Order order = hotel.commandToRoom(guest, List.of("coffee"));
 
-        assertEquals(8, order.getId().length());
+        assertFalse(order.getId().isEmpty());
         assertTrue(hotel.getOrders().contains(order));
         assertEquals(List.of("coffee"), order.getItems());
     }
@@ -122,16 +123,16 @@ public class HotelTest {
     @Test
     public void testDeliverToRoomWithOnlyServerDeliversWithoutPreparedBy() {
         var hotel = new Hotel("H","L","A","P",4,10,null);
-        var server = new Server("s1", "Serve", "T", LocalDateTime.now(), "PB", "111", hotel);
+        var waiter = new Waiter("s1", "Serve", "T", LocalDateTime.now(), "PB", "111", hotel);
         var room = new StandardRoom();
         var order = new Order("o1", new Guest("g1", "Alice"), room, List.of("coffee"));
-        hotel.addEmployee(server);
+        hotel.addEmployee(waiter);
 
         hotel.deliverToRoom(order);
 
         assertEquals(OrderStatus.DELIVERED, order.getStatus());
         assertNull(order.getPreparedBy());
-        assertEquals(server, order.getDeliveredBy());
+        assertEquals(waiter, order.getDeliveredBy());
         assertTrue(room.getDeliveries().contains(order));
     }
 
@@ -241,5 +242,110 @@ public class HotelTest {
         var hotel = new Hotel("H","L","A","P",4,10,null);
 
         assertTrue(hotel.getOrdersByStatus(OrderStatus.PLACED).isEmpty());
+    }
+
+    @Test
+    public void testReserveRoomWithDatesSuccess() {
+        var hotel = new Hotel("H", "L", "A", "P", 4, 10, null);
+        var room = new StandardRoom();
+        hotel.addRoom(room);
+        var guest = new Guest("g1", "Alice");
+        hotel.register(guest);
+
+        hotel.reserveRoom(guest, room, LocalDate.of(2026, 7, 1), LocalDate.of(2026, 7, 4));
+
+        assertTrue(room.isOccupied());
+        assertTrue(guest.getBookedRooms().contains(room));
+        assertEquals(1, hotel.getReservations().size());
+        assertEquals(guest, hotel.getReservations().getFirst().getGuest());
+        assertEquals(room, hotel.getReservations().getFirst().getRoom());
+    }
+
+    @Test
+    public void testReserveRoomOverlappingDatesThrows() {
+        var hotel = new Hotel("H", "L", "A", "P", 4, 10, null);
+        var room = new StandardRoom();
+        hotel.addRoom(room);
+        var alice = new Guest("g1", "Alice");
+        var bob = new Guest("g2", "Bob");
+        hotel.register(alice);
+        hotel.register(bob);
+
+        hotel.reserveRoom(alice, room, LocalDate.of(2026, 7, 1), LocalDate.of(2026, 7, 4));
+
+        assertThrows(IllegalStateException.class,
+            () -> hotel.reserveRoom(bob, room, LocalDate.of(2026, 7, 2), LocalDate.of(2026, 7, 5)));
+        assertFalse(bob.getBookedRooms().contains(room));
+    }
+
+    @Test
+    public void testReserveRoomNonOverlappingDatesAtBoundary() {
+        var hotel = new Hotel("H", "L", "A", "P", 4, 10, null);
+        var room = new StandardRoom();
+        hotel.addRoom(room);
+        var alice = new Guest("g1", "Alice");
+        var bob = new Guest("g2", "Bob");
+        hotel.register(alice);
+        hotel.register(bob);
+
+        hotel.reserveRoom(alice, room, LocalDate.of(2026, 7, 1), LocalDate.of(2026, 7, 4));
+        hotel.reserveRoom(bob, room, LocalDate.of(2026, 7, 4), LocalDate.of(2026, 7, 7));
+
+        assertEquals(2, hotel.getReservations().size());
+    }
+
+    @Test
+    public void testIsRoomAvailableWithDates() {
+        var hotel = new Hotel("H", "L", "A", "P", 4, 10, null);
+        var room = new StandardRoom();
+        hotel.addRoom(room);
+        var guest = new Guest("g1", "Alice");
+        hotel.register(guest);
+
+        hotel.reserveRoom(guest, room, LocalDate.of(2026, 7, 1), LocalDate.of(2026, 7, 4));
+
+        assertFalse(hotel.isRoomAvailable(room, LocalDate.of(2026, 7, 2), LocalDate.of(2026, 7, 5)));
+        assertTrue(hotel.isRoomAvailable(room, LocalDate.of(2026, 7, 4), LocalDate.of(2026, 7, 7)));
+        assertTrue(hotel.isRoomAvailable(new StandardRoom(), LocalDate.of(2026, 7, 1), LocalDate.of(2026, 7, 4)));
+    }
+
+    @Test
+    public void testGetAvailableRoomsWithDates() {
+        var hotel = new Hotel("H", "L", "A", "P", 4, 10, null);
+        var room1 = new StandardRoom();
+        var room2 = new StandardRoom();
+        hotel.addRoom(room1);
+        hotel.addRoom(room2);
+        var guest = new Guest("g1", "Alice");
+        hotel.register(guest);
+
+        hotel.reserveRoom(guest, room1, LocalDate.of(2026, 7, 1), LocalDate.of(2026, 7, 4));
+
+        var available = hotel.getAvailableRooms(LocalDate.of(2026, 7, 2), LocalDate.of(2026, 7, 5));
+        assertFalse(available.contains(room1));
+        assertTrue(available.contains(room2));
+        assertEquals(1, available.size());
+    }
+
+    @Test
+    public void testReserveRoomWithNullDatesThrows() {
+        var hotel = new Hotel("H", "L", "A", "P", 4, 10, null);
+        var room = new StandardRoom();
+        var guest = new Guest("g1", "Alice");
+
+        assertThrows(IllegalArgumentException.class,
+            () -> hotel.reserveRoom(guest, room, null, LocalDate.of(2026, 7, 4)));
+    }
+
+    @Test
+    public void testReserveRoomWithInvalidDateOrderThrows() {
+        var hotel = new Hotel("H", "L", "A", "P", 4, 10, null);
+        var room = new StandardRoom();
+        hotel.addRoom(room);
+        var guest = new Guest("g1", "Alice");
+        hotel.register(guest);
+
+        assertThrows(IllegalArgumentException.class,
+            () -> hotel.reserveRoom(guest, room, LocalDate.of(2026, 7, 4), LocalDate.of(2026, 7, 1)));
     }
 }

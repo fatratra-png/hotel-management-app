@@ -14,16 +14,16 @@ public class EmployeeAndOrderTest {
         var hotel = new Hotel("H","L","A","P",4,10,new HashSet<>());
 
         var cook = new Cook("c2","C","S",LocalDateTime.now(),"PB","000",hotel);
-        var server = new Server("s2","S","T",LocalDateTime.now(),"PB","111",hotel);
+        var waiter = new Waiter("s2","S","T",LocalDateTime.now(),"PB","111",hotel);
         var manager = new Manager("m2","M","N",LocalDateTime.now(),"PB","222",hotel);
 
         hotel.addEmployee(cook);
-        hotel.addEmployee(server);
+        hotel.addEmployee(waiter);
         hotel.addEmployee(manager);
 
         assertEquals(3, hotel.countEmployees());
         assertEquals(1, hotel.countEmployeesByJob(Job.COOK));
-        assertEquals(1, hotel.countEmployeesByJob(Job.SERVER));
+        assertEquals(1, hotel.countEmployeesByJob(Job.WAITER));
 
         hotel.removeEmployee("s2");
         assertEquals(2, hotel.countEmployees());
@@ -79,8 +79,8 @@ public class EmployeeAndOrderTest {
         order.setStatus(OrderStatus.READY);
         assertEquals(OrderStatus.READY, order.getStatus());
 
-        var server = new Server("s9","Serv","Y",LocalDateTime.now(),"PB","111",hotel);
-        order.setDeliveredBy(server);
+        var waiter = new Waiter("s9","Serv","Y",LocalDateTime.now(),"PB","111",hotel);
+        order.setDeliveredBy(waiter);
         order.setStatus(OrderStatus.DELIVERED);
         assertEquals(OrderStatus.DELIVERED, order.getStatus());
         assertNotNull(order.getDeliveredAt());

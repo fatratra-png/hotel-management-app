@@ -3,13 +3,11 @@ package org.hotel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.UUID;
+import java.time.LocalDate;
 
 @EqualsAndHashCode
 @Getter
@@ -24,8 +22,9 @@ public class Hotel {
     private final Set<Employee> employees;
     private final Set<Guest> guests;
     private final Set<Room> rooms;
-    private final Map<Guest, Room> reservations;
+    private final List<Reservation> reservations;
     private final List<Order> orders;
+    private int orderIdCounter;
 
     public Hotel(String name, String location, String address, String phoneNumber, int starCount, int roomCount, Set<Employee> employees) {
         if(starCount < 0 || starCount > 5) throw new IllegalArgumentException("Star count must be between 0 and 5");
@@ -38,7 +37,7 @@ public class Hotel {
         this.employees = new HashSet<>();
         this.guests = new HashSet<>();
         this.rooms = new HashSet<>();
-        this.reservations = new HashMap<>();
+        this.reservations = new ArrayList<>();
         this.orders = new ArrayList<>();
     }
 
@@ -51,21 +50,34 @@ public class Hotel {
     }
 
     public void reserveRoom(Guest guest, Room room) {
-        if (room.isOccupied()) {
-            throw new IllegalStateException("Room is already occupied");
+        reserveRoom(guest, room, LocalDate.now(), LocalDate.now().plusDays(1));
+    }
+
+    public void reserveRoom(Guest guest, Room room, LocalDate checkIn, LocalDate checkOut) {
+        if (!isRoomAvailable(room, checkIn, checkOut)) {
+            throw new IllegalStateException("Room is not available for the selected dates");
         }
         room.setOccupied(true);
-        reservations.put(guest, room);
+        reservations.add(new Reservation(checkIn, checkOut, guest, room));
         guest.book(room);
     }
 
+    public boolean isRoomAvailable(Room room, LocalDate checkIn, LocalDate checkOut) {
+        for (var r : reservations) {
+            if (r.getRoom().equals(room) && r.overlaps(checkIn, checkOut)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public Order commandToRoom(Guest guest, List<String> items) {
-        Room room = reservations.get(guest);
+        var room = getRoomOf(guest);
         if (room == null) {
             throw new IllegalStateException("Guest has no room reservation");
         }
-        String orderId = UUID.randomUUID().toString().substring(0, 8);
-        Order order = new Order(orderId, guest, room, items);
+        var orderId = String.valueOf(++orderIdCounter);
+        var order = new Order(orderId, guest, room, items);
         orders.add(order);
         return order;
     }
@@ -75,15 +87,15 @@ public class Hotel {
         if (cook != null) {
             cook.prepare(order);
         }
-        Server server = findAvailableServer();
-        if (server != null) {
-            server.deliver(order);
+        Waiter waiter = findAvailableWaiter();
+        if (waiter != null) {
+            waiter.deliver(order);
         }
     }
 
     public List<Room> getAvailableRooms() {
-        List<Room> available = new ArrayList<>();
-        for (Room room : rooms) {
+        var available = new ArrayList<Room>();
+        for (var room : rooms) {
             if (!room.isOccupied()) {
                 available.add(room);
             }
@@ -91,8 +103,23 @@ public class Hotel {
         return available;
     }
 
+    public List<Room> getAvailableRooms(LocalDate checkIn, LocalDate checkOut) {
+        var available = new ArrayList<Room>();
+        for (var room : rooms) {
+            if (isRoomAvailable(room, checkIn, checkOut)) {
+                available.add(room);
+            }
+        }
+        return available;
+    }
+
     public Room getRoomOf(Guest guest) {
-        return reservations.get(guest);
+        for (var r : reservations) {
+            if (r.getGuest().equals(guest)) {
+                return r.getRoom();
+            }
+        }
+        return null;
     }
 
 
@@ -115,10 +142,10 @@ public class Hotel {
         return null;
     }
 
-    private Server findAvailableServer() {
+    private Waiter findAvailableWaiter() {
         for (Employee emp : employees) {
-            if (emp instanceof Server) {
-                return (Server) emp;
+            if (emp instanceof Waiter) {
+                return (Waiter) emp;
             }
         }
         return null;

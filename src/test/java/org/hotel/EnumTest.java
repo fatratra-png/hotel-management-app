@@ -18,7 +18,7 @@ public class EnumTest {
     @Test
     public void testJobContainsAllExpectedValuesInOrder() {
         assertArrayEquals(
-                new Job[]{Job.MANAGER, Job.HOUSEKEEPER, Job.GUARD, Job.COOK, Job.RECEPTIONIST, Job.SERVER},
+                new Job[]{Job.MANAGER, Job.HOUSEKEEPER, Job.GUARD, Job.COOK, Job.RECEPTIONIST, Job.WAITER},
                 Job.values());
     }
 

@@ -60,13 +60,13 @@ public class OrderTest {
         var hotel = new Hotel("H","L","A","P",4,5,null);
         var order = new Order("o5", new Guest("g8","Lee"), new StandardRoom(), java.util.List.of("x"));
         var cook = new Cook("c5","Chef","A", java.time.LocalDateTime.now(), "PB", "000", hotel);
-        var server = new Server("s5","Server","A", java.time.LocalDateTime.now(), "PB", "111", hotel);
+        var waiter = new Waiter("s5","Server","A", java.time.LocalDateTime.now(), "PB", "111", hotel);
 
         order.setPreparedBy(cook);
-        order.setDeliveredBy(server);
+        order.setDeliveredBy(waiter);
 
         assertEquals(cook, order.getPreparedBy());
-        assertEquals(server, order.getDeliveredBy());
+        assertEquals(waiter, order.getDeliveredBy());
     }
 
     @Test

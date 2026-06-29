@@ -28,10 +28,10 @@ public class StaffBehaviorTest {
     }
 
     @Test
-    public void testCookAndServerActions() {
+    public void testCookAndWaiterActions() {
         var hotel = new Hotel("H","L","A","P",4,5,null);
         var cook = new Cook("c1","Cook","C",LocalDateTime.now(),"PB","444",hotel);
-        var server = new Server("s1","Serv","S",LocalDateTime.now(),"PB","555",hotel);
+        var waiter = new Waiter("s1","Serv","S",LocalDateTime.now(),"PB","555",hotel);
         var room = new StandardRoom();
         var guest = new Guest("g3","Sam");
         hotel.addRoom(room);
@@ -41,31 +41,31 @@ public class StaffBehaviorTest {
         cook.prepare(order);
         assertEquals(OrderStatus.READY, order.getStatus());
         assertEquals(cook, order.getPreparedBy());
-        server.deliver(order);
-        assertEquals(server, order.getDeliveredBy());
+        waiter.deliver(order);
+        assertEquals(waiter, order.getDeliveredBy());
         assertEquals(OrderStatus.DELIVERED, order.getStatus());
     }
 
     @Test
-    public void testCookAndServerHaveExpectedJobsAndHours() {
+    public void testCookAndWaiterHaveExpectedJobsAndHours() {
         var hotel = new Hotel("H","L","A","P",4,5,null);
         var cook = new Cook("c2","Cook","C",LocalDateTime.now(),"PB","444",hotel);
-        var server = new Server("s2","Serv","S",LocalDateTime.now(),"PB","555",hotel);
+        var waiter = new Waiter("s2","Serv","S",LocalDateTime.now(),"PB","555",hotel);
 
         assertEquals(Job.COOK, cook.getJob());
         assertEquals(8, cook.countWorkHour());
-        assertEquals(Job.SERVER, server.getJob());
-        assertEquals(8, server.countWorkHour());
+        assertEquals(Job.WAITER, waiter.getJob());
+        assertEquals(8, waiter.countWorkHour());
     }
 
     @Test
-    public void testServerDeliveryAddsExactlyOneDelivery() {
+    public void testWaiterDeliveryAddsExactlyOneDelivery() {
         var hotel = new Hotel("H","L","A","P",4,5,null);
-        var server = new Server("s3","Serv","S",LocalDateTime.now(),"PB","555",hotel);
+        var waiter = new Waiter("s3","Serv","S",LocalDateTime.now(),"PB","555",hotel);
         var room = new StandardRoom();
         var order = new Order("ord2", new Guest("g4","Sam"), room, java.util.List.of("a"));
 
-        server.deliver(order);
+        waiter.deliver(order);
 
         assertEquals(1, room.getDeliveries().size());
         assertEquals(order, room.getDeliveries().getFirst());
@@ -75,9 +75,9 @@ public class StaffBehaviorTest {
     public void testWorkMessagesIncludeEmployeeName() {
         var hotel = new Hotel("H","L","A","P",4,5,null);
         var cook = new Cook("c3","CookName","C",LocalDateTime.now(),"PB","444",hotel);
-        var server = new Server("s4","ServerName","S",LocalDateTime.now(),"PB","555",hotel);
+        var waiter = new Waiter("s4","ServerName","S",LocalDateTime.now(),"PB","555",hotel);
 
         assertTrue(cook.work().startsWith("CookName"));
-        assertTrue(server.work().startsWith("ServerName"));
+        assertTrue(waiter.work().startsWith("ServerName"));
     }
 }

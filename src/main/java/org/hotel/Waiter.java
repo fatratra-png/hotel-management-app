@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 
 @Getter
-public class Server extends Employee {
-  public Server(
+public class Waiter extends Employee {
+  public Waiter(
       String id,
       String name,
       String surname,
@@ -14,7 +14,7 @@ public class Server extends Employee {
       String placeOfBirth,
       String phoneNumber,
       Hotel hotel) {
-    super(id, name, surname, dateOfBirth, Job.SERVER, placeOfBirth, phoneNumber, hotel,2000.0);
+    super(id, name, surname, dateOfBirth, Job.WAITER, placeOfBirth, phoneNumber, hotel,2000.0);
   }
 
   public void deliver(Order order) {
