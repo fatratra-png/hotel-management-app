@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @EqualsAndHashCode
 @Getter
@@ -71,57 +72,38 @@ public class Hotel {
     }
 
     public void deliverToRoom(Order order) {
-        Cook cook = findAvailableCook();
-        if (cook != null) {
-            cook.prepare(order);
-        }
-        Server server = findAvailableServer();
-        if (server != null) {
-            server.deliver(order);
-        }
+        findAvailableCook().ifPresent(cook -> cook.prepare(order));
+        findAvailableServer().ifPresent(server -> server.deliver(order));
     }
 
     public List<Room> getAvailableRooms() {
-        List<Room> available = new ArrayList<>();
-        for (Room room : rooms) {
-            if (!room.isOccupied()) {
-                available.add(room);
-            }
-        }
-        return available;
+        return rooms.stream()
+                .filter(room -> !room.isOccupied())
+                .collect(Collectors.toList());
     }
 
     public Room getRoomOf(Guest guest) {
         return reservations.get(guest);
     }
 
-
     public List<Order> getOrdersByStatus(OrderStatus status) {
-        List<Order> result = new ArrayList<>();
-        for (Order order : orders) {
-            if (order.getStatus() == status) {
-                result.add(order);
-            }
-        }
-        return result;
+        return orders.stream()
+                .filter(order -> order.getStatus() == status)
+                .collect(Collectors.toList());
     }
 
-    private Cook findAvailableCook() {
-        for (Employee emp : employees) {
-            if (emp instanceof Cook) {
-                return (Cook) emp;
-            }
-        }
-        return null;
+    private java.util.Optional<Cook> findAvailableCook() {
+        return employees.stream()
+                .filter(emp -> emp instanceof Cook)
+                .map(emp -> (Cook) emp)
+                .findFirst();
     }
 
-    private Server findAvailableServer() {
-        for (Employee emp : employees) {
-            if (emp instanceof Server) {
-                return (Server) emp;
-            }
-        }
-        return null;
+    private java.util.Optional<Server> findAvailableServer() {
+        return employees.stream()
+                .filter(emp -> emp instanceof Server)
+                .map(emp -> (Server) emp)
+                .findFirst();
     }
 
     public void book(Guest guest, Room room){
@@ -141,12 +123,8 @@ public class Hotel {
     }
 
     public int countEmployeesByJob(Job job){
-        int count = 0;
-        for(Employee employee : employees){
-            if(employee.getJob() == job){
-                count++;
-            }
-        }
-        return count;
+        return (int) employees.stream()
+                .filter(employee -> employee.getJob() == job)
+                .count();
     }
 }
