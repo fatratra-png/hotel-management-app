@@ -48,7 +48,7 @@ public class Main {
     }
 
     private static Hotel seedHotel() {
-        var hotel = new Hotel("Grand Hotel Palace", "Paris", "12 Rue de la Paix", "+33 1 23 45 67 89", 5, 20, null);
+        var hotel = new Hotel("Stiky Socks hotel", "Ivandry", "Rue Zafy Albert", "+216 38 61 792 94", 5, 20, null);
         for (var i = 0; i < 4; i++) hotel.addRoom(new StandardRoom());
         for (var i = 0; i < 3; i++) hotel.addRoom(new MidRoom());
         hotel.addRoom(new LuxuryRoom());
