@@ -1,6 +1,7 @@
 package org.hotel;
 
 import lombok.Getter;
+import org.hotel.order.OrderItem;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -11,14 +12,14 @@ public class Order {
     private String id;
     private Guest guest;
     private Room room;
-    private List<String> items;
+    private List<OrderItem> items;
     private OrderStatus status;
     private LocalDateTime orderedAt;
     private LocalDateTime deliveredAt;
     private Employee preparedBy;
     private Employee deliveredBy;
 
-    public Order(String id, Guest guest, Room room, List<String> items) {
+    public Order(String id, Guest guest, Room room, List<OrderItem> items) {
         this.id = id;
         this.guest = guest;
         this.room = room;
@@ -49,7 +50,6 @@ public class Order {
         }
         this.status = OrderStatus.CANCELLED;
     }
-
 
     public void setPreparedBy(Employee cook) {
         this.preparedBy = cook;

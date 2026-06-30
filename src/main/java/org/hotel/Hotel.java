@@ -2,6 +2,10 @@ package org.hotel;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.hotel.order.OrderItem;
+import org.hotel.payment.Invoice;
+import org.hotel.payment.Payment;
+import org.hotel.payment.PaymentMethod;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -17,7 +21,7 @@ public class Hotel {
     private final String location;
     private final String address;
     private final String phoneNumber;
-    private int starCount;
+    private final int starCount;
     private final int roomCount;
     private final Set<Employee> employees;
     private final Set<Guest> guests;
@@ -26,7 +30,7 @@ public class Hotel {
     private final List<Order> orders;
     private int orderIdCounter;
 
-    public Hotel(String name, String location, String address, String phoneNumber, int starCount, int roomCount, Set<Employee> employees) {
+    public Hotel(String name, String location, String address, String phoneNumber, int starCount, int roomCount) {
         if(starCount < 0 || starCount > 5) throw new IllegalArgumentException("Star count must be between 0 and 5");
         this.name = name;
         this.location = location;
@@ -58,7 +62,8 @@ public class Hotel {
             throw new IllegalStateException("Room is not available for the selected dates");
         }
         room.setOccupied(true);
-        reservations.add(new Reservation(checkIn, checkOut, guest, room));
+        var reservation = new Reservation(checkIn, checkOut, guest, room);
+        reservations.add(reservation);
         guest.book(room);
     }
 
@@ -71,7 +76,7 @@ public class Hotel {
         return true;
     }
 
-    public Order commandToRoom(Guest guest, List<String> items) {
+    public Order commandToRoom(Guest guest, List<OrderItem> items) {
         var room = getRoomOf(guest);
         if (room == null) {
             throw new IllegalStateException("Guest has no room reservation");
@@ -83,6 +88,9 @@ public class Hotel {
     }
 
     public void deliverToRoom(Order order) {
+        if (!order.isActive() || order.getStatus() != OrderStatus.PLACED) {
+            throw new IllegalStateException("Order cannot be delivered from current status: " + order.getStatus());
+        }
         Cook cook = findAvailableCook();
         if (cook != null) {
             cook.prepare(order);
@@ -90,6 +98,16 @@ public class Hotel {
         Waiter waiter = findAvailableWaiter();
         if (waiter != null) {
             waiter.deliver(order);
+        }
+        addOrderChargesToInvoice(order);
+    }
+
+    private void addOrderChargesToInvoice(Order order) {
+        for (var r : reservations) {
+            if (r.getGuest().equals(order.getGuest())) {
+                r.getInvoice().addOrderCharges(order);
+                break;
+            }
         }
     }
 
@@ -122,6 +140,27 @@ public class Hotel {
         return null;
     }
 
+    public Reservation getReservationOf(Guest guest) {
+        for (var r : reservations) {
+            if (r.getGuest().equals(guest)) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    public Invoice getInvoiceFor(Guest guest) {
+        var reservation = getReservationOf(guest);
+        return reservation != null ? reservation.getInvoice() : null;
+    }
+
+    public Payment payInvoice(Guest guest, double amount, PaymentMethod method) {
+        var invoice = getInvoiceFor(guest);
+        if (invoice == null) {
+            throw new IllegalStateException("Guest has no invoice");
+        }
+        return invoice.pay(amount, method);
+    }
 
     public List<Order> getOrdersByStatus(OrderStatus status) {
         List<Order> result = new ArrayList<>();

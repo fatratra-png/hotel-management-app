@@ -8,5 +8,6 @@ public class LuxuryRoom extends Room {
     super();
     this.hasAC = true;
     this.hasSeaView = true;
+    this.nightlyRate = 150.0;
   }
 }

@@ -10,7 +10,7 @@ public class EmployeeTest {
 
     @Test
     public void testEmployeeCommonCalculations() {
-        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var hotel = new Hotel("H","L","A","P",4,5);
         var m = new Manager("m100","John","Doe", LocalDateTime.now(), "PB", "000", hotel);
         m.addBonus(50);
         double salary = m.countSalaryByHour(20, 5);
@@ -29,7 +29,7 @@ public class EmployeeTest {
 
     @Test
     public void testBonusAccumulatesOnCurrentSalary() {
-        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var hotel = new Hotel("H","L","A","P",4,5);
         var manager = new Manager("m101","John","Doe", LocalDateTime.now(), "PB", "000", hotel);
 
         manager.addBonus(50);
@@ -40,7 +40,7 @@ public class EmployeeTest {
 
     @Test
     public void testCountSalaryByHourReplacesPreviousSalary() {
-        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var hotel = new Hotel("H","L","A","P",4,5);
         var manager = new Manager("m102","John","Doe", LocalDateTime.now(), "PB", "000", hotel);
         manager.addBonus(500);
 
@@ -51,7 +51,7 @@ public class EmployeeTest {
 
     @Test
     public void testZeroTaxKeepsNetSalaryEqualToGrossSalary() {
-        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var hotel = new Hotel("H","L","A","P",4,5);
         var manager = new Manager("m103","John","Doe", LocalDateTime.now(), "PB", "000", hotel);
         manager.countSalaryByHour(30, 8);
 

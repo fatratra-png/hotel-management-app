@@ -1,6 +1,7 @@
 package org.hotel;
 
 import org.junit.jupiter.api.Test;
+import org.hotel.order.OrderItem;
 
 import java.time.LocalDateTime;
 
@@ -10,7 +11,7 @@ public class StaffBehaviorTest {
 
     @Test
     public void testReceptionistWorkAndHours() {
-        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var hotel = new Hotel("H","L","A","P",4,5);
         var r = new Receptionist("rec1","R","L",LocalDateTime.now(),"PB","123",hotel);
         assertTrue(r.work().contains("receives"));
         assertEquals(8, r.countWorkHour());
@@ -18,7 +19,7 @@ public class StaffBehaviorTest {
 
     @Test
     public void testHousekeeperAndGuard() {
-        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var hotel = new Hotel("H","L","A","P",4,5);
         var h = new Housekeeper("h1","H","K",LocalDateTime.now(),"PB","222",hotel);
         var g = new Guard("g1","G","D",LocalDateTime.now(),"PB","333",hotel);
         assertTrue(h.work().contains("cleaning"));
@@ -29,7 +30,7 @@ public class StaffBehaviorTest {
 
     @Test
     public void testCookAndWaiterActions() {
-        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var hotel = new Hotel("H","L","A","P",4,5);
         var cook = new Cook("c1","Cook","C",LocalDateTime.now(),"PB","444",hotel);
         var waiter = new Waiter("s1","Serv","S",LocalDateTime.now(),"PB","555",hotel);
         var room = new StandardRoom();
@@ -37,7 +38,7 @@ public class StaffBehaviorTest {
         hotel.addRoom(room);
         hotel.register(guest);
         hotel.book(guest, room);
-        var order = new Order("ord1", guest, room, java.util.List.of("a"));
+        var order = new Order("ord1", guest, room, java.util.List.of(new OrderItem("a", 5.0)));
         cook.prepare(order);
         assertEquals(OrderStatus.READY, order.getStatus());
         assertEquals(cook, order.getPreparedBy());
@@ -48,7 +49,7 @@ public class StaffBehaviorTest {
 
     @Test
     public void testCookAndWaiterHaveExpectedJobsAndHours() {
-        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var hotel = new Hotel("H","L","A","P",4,5);
         var cook = new Cook("c2","Cook","C",LocalDateTime.now(),"PB","444",hotel);
         var waiter = new Waiter("s2","Serv","S",LocalDateTime.now(),"PB","555",hotel);
 
@@ -60,10 +61,10 @@ public class StaffBehaviorTest {
 
     @Test
     public void testWaiterDeliveryAddsExactlyOneDelivery() {
-        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var hotel = new Hotel("H","L","A","P",4,5);
         var waiter = new Waiter("s3","Serv","S",LocalDateTime.now(),"PB","555",hotel);
         var room = new StandardRoom();
-        var order = new Order("ord2", new Guest("g4","Sam"), room, java.util.List.of("a"));
+        var order = new Order("ord2", new Guest("g4","Sam"), room, java.util.List.of(new OrderItem("a", 5.0)));
 
         waiter.deliver(order);
 
@@ -73,7 +74,7 @@ public class StaffBehaviorTest {
 
     @Test
     public void testWorkMessagesIncludeEmployeeName() {
-        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var hotel = new Hotel("H","L","A","P",4,5);
         var cook = new Cook("c3","CookName","C",LocalDateTime.now(),"PB","444",hotel);
         var waiter = new Waiter("s4","ServerName","S",LocalDateTime.now(),"PB","555",hotel);
 

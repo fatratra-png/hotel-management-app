@@ -25,13 +25,13 @@ public class EnumTest {
     @Test
     public void testOrderStatusContainsAllExpectedValuesInOrder() {
         assertArrayEquals(
-                new OrderStatus[]{OrderStatus.PLACED, OrderStatus.PREPARING, OrderStatus.READY, OrderStatus.DELIVERED},
+                new OrderStatus[]{OrderStatus.PLACED, OrderStatus.PREPARING, OrderStatus.READY, OrderStatus.DELIVERED, OrderStatus.CANCELLED},
                 OrderStatus.values());
     }
 
     @Test
     public void testEnumValueOfRejectsUnknownValue() {
         assertThrows(IllegalArgumentException.class, () -> Job.valueOf("BARTENDER"));
-        assertThrows(IllegalArgumentException.class, () -> OrderStatus.valueOf("CANCELLED"));
+        assertThrows(IllegalArgumentException.class, () -> OrderStatus.valueOf("UNKNOWN"));
     }
 }

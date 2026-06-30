@@ -13,6 +13,7 @@ public abstract class Room {
   protected boolean isOccupied = false;
   protected boolean hasSeaView = false;
   protected boolean hasAC = false;
+  protected double nightlyRate;
   private List<Order> deliveries = new ArrayList<>();
 
   public Room() {}

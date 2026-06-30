@@ -1,5 +1,9 @@
 package org.hotel;
 
+import org.hotel.order.OrderItem;
+import org.hotel.payment.Invoice;
+import org.hotel.payment.PaymentMethod;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -26,7 +30,9 @@ public class Main {
             System.out.println(" 3.  List all rooms");
             System.out.println(" 4.  Make a reservation");
             System.out.println(" 5.  View reservations");
-            System.out.println(" 6.  Exit");
+            System.out.println(" 6.  View invoice");
+            System.out.println(" 7.  Make payment");
+            System.out.println(" 8.  Exit");
             System.out.print("Choice : ");
 
             var choice = scanner.nextLine().trim();
@@ -37,7 +43,9 @@ public class Main {
                 case "3" -> showAllRooms(hotel);
                 case "4" -> makeReservation(hotel, scanner);
                 case "5" -> showReservations(hotel);
-                case "6" -> {
+                case "6" -> showInvoice(hotel, scanner);
+                case "7" -> makePayment(hotel, scanner);
+                case "8" -> {
                     System.out.println("\nThank you and goodbye !");
                     scanner.close();
                     return;
@@ -48,7 +56,7 @@ public class Main {
     }
 
     private static Hotel seedHotel() {
-        var hotel = new Hotel("Stiky Socks hotel", "Ivandry", "Rue Zafy Albert", "+216 38 61 792 94", 5, 20, null);
+        var hotel = new Hotel("Stinky Socks hotel", "Ivandry", "Rue Zafy Albert", "+216 38 61 792 94", 5, 20);
         for (var i = 0; i < 4; i++) hotel.addRoom(new StandardRoom());
         for (var i = 0; i < 3; i++) hotel.addRoom(new MidRoom());
         hotel.addRoom(new LuxuryRoom());
@@ -68,6 +76,7 @@ public class Main {
         var sb = new StringBuilder(roomType(room));
         if (room.isHasSeaView()) sb.append(" [Sea view]");
         if (room.isHasAC()) sb.append(" [AC]");
+        sb.append(" — $").append(String.format("%.0f", room.getNightlyRate())).append("/night");
         return sb.toString();
     }
 
@@ -170,7 +179,93 @@ public class Main {
             System.out.println("  • " + r.getGuest().getName()
                 + " → " + roomType(r.getRoom())
                 + " | " + r.getCheckIn().format(DATE_FMT)
-                + " → " + r.getCheckOut().format(DATE_FMT));
+                + " → " + r.getCheckOut().format(DATE_FMT)
+                + " | " + r.getNights() + " nights"
+                + " | Total: $" + String.format("%.2f", r.getInvoice().getTotal()));
+        }
+    }
+
+    private static void showInvoice(Hotel hotel, Scanner scanner) {
+        var guest = selectGuest(hotel, scanner);
+        if (guest == null) return;
+
+        var invoice = hotel.getInvoiceFor(guest);
+        if (invoice == null) {
+            System.out.println("\nNo invoice found for this guest.");
+            return;
+        }
+
+        System.out.println("\n── INVOICE ──");
+        System.out.println("Guest       : " + guest.getName());
+        System.out.println("Room charges: $" + String.format("%.2f", invoice.getRoomCharges()));
+        System.out.println("Service chrg: $" + String.format("%.2f", invoice.getServiceCharges()));
+        System.out.println("Total       : $" + String.format("%.2f", invoice.getTotal()));
+        System.out.println("Paid        : $" + String.format("%.2f", invoice.getTotalPaid()));
+        System.out.println("Outstanding : $" + String.format("%.2f", invoice.getOutstandingBalance()));
+        System.out.println("Status      : " + (invoice.isFullyPaid() ? "PAID" : "UNPAID"));
+    }
+
+    private static void makePayment(Hotel hotel, Scanner scanner) {
+        var guest = selectGuest(hotel, scanner);
+        if (guest == null) return;
+
+        var invoice = hotel.getInvoiceFor(guest);
+        if (invoice == null) {
+            System.out.println("\nNo invoice found for this guest.");
+            return;
+        }
+
+        if (invoice.isFullyPaid()) {
+            System.out.println("\nInvoice is already fully paid.");
+            return;
+        }
+
+        System.out.println("\n── PAYMENT ──");
+        System.out.println("Outstanding: $" + String.format("%.2f", invoice.getOutstandingBalance()));
+        System.out.println("Methods:");
+        var methods = PaymentMethod.values();
+        for (var i = 0; i < methods.length; i++) {
+            System.out.println("  " + (i + 1) + ". " + methods[i].name());
+        }
+
+        var methodIdx = readInt(scanner, "Choose method (1-" + methods.length + ") : ", 1, methods.length) - 1;
+        var method = methods[methodIdx];
+
+        var amount = readDouble(scanner, "Amount to pay ($) : ", 0.01, invoice.getOutstandingBalance());
+
+        try {
+            hotel.payInvoice(guest, amount, method);
+            System.out.println("\n✓ Payment of $" + String.format("%.2f", amount)
+                + " via " + method.name() + " successful!");
+        } catch (Exception e) {
+            System.out.println("\n✗ Payment failed: " + e.getMessage());
+        }
+    }
+
+    private static Guest selectGuest(Hotel hotel, Scanner scanner) {
+        var reservations = hotel.getReservations();
+        if (reservations.isEmpty()) {
+            System.out.println("\nNo guests with reservations.");
+            return null;
+        }
+        System.out.println("\n── GUESTS ──");
+        for (var i = 0; i < reservations.size(); i++) {
+            var r = reservations.get(i);
+            System.out.println("  " + (i + 1) + ". " + r.getGuest().getName()
+                + " (" + roomType(r.getRoom()) + ")");
+        }
+        var idx = readInt(scanner, "Select guest (1-" + reservations.size() + ") : ", 1, reservations.size()) - 1;
+        return reservations.get(idx).getGuest();
+    }
+
+    private static double readDouble(Scanner scanner, String prompt, double min, double max) {
+        while (true) {
+            System.out.print(prompt);
+            try {
+                var val = Double.parseDouble(scanner.nextLine().trim());
+                if (val >= min && val <= max) return val;
+            } catch (NumberFormatException ignored) {}
+            System.out.println("Please enter a number between " + min + " and " + max + ".");
         }
     }
 

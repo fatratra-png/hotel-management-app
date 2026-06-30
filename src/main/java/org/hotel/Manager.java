@@ -16,7 +16,7 @@ public class Manager extends Employee {
 
   @Override
   public String work() {
-    return getName() + " is the manager at " + this.getHotel();
+    return getName() + " is the manager at " + this.getHotel().getName();
   }
 
   @Override

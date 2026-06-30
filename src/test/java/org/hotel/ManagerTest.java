@@ -10,7 +10,7 @@ public class ManagerTest {
 
     @Test
     public void testManagerWorkAndJob() {
-        var hotel = new Hotel("H","L","A","P",5,5,null);
+        var hotel = new Hotel("H","L","A","P",5,5);
         var m = new Manager("m100","M","X", LocalDateTime.now(), "PB", "202", hotel);
         assertEquals(8, m.countWorkHour());
         assertTrue(m.work().contains("manager"));
@@ -19,7 +19,7 @@ public class ManagerTest {
 
     @Test
     public void testManagerHasDefaultSalaryAndHotelReference() {
-        var hotel = new Hotel("H","L","A","P",5,5,null);
+        var hotel = new Hotel("H","L","A","P",5,5);
         var manager = new Manager("m101","M","X", LocalDateTime.now(), "PB", "202", hotel);
 
         assertEquals(2000, manager.getSalary());

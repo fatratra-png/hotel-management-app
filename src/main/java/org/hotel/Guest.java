@@ -2,6 +2,7 @@ package org.hotel;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hotel.order.OrderItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class Guest {
         bookedRooms.add(room);
     }
 
-    public Order placeOrder(String orderId, List<String> items, Hotel hotel) {
+    public Order placeOrder(List<OrderItem> items, Hotel hotel) {
         Order order = hotel.commandToRoom(this, items);
         orders.add(order);
         return order;

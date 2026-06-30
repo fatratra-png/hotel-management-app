@@ -1,9 +1,9 @@
 package org.hotel;
 
 import org.junit.jupiter.api.Test;
+import org.hotel.order.OrderItem;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,7 +11,7 @@ public class EmployeeAndOrderTest {
 
     @Test
     public void testEmployeeAddRemoveAndCounts() {
-        var hotel = new Hotel("H","L","A","P",4,10,new HashSet<>());
+        var hotel = new Hotel("H","L","A","P",4,10);
 
         var cook = new Cook("c2","C","S",LocalDateTime.now(),"PB","000",hotel);
         var waiter = new Waiter("s2","S","T",LocalDateTime.now(),"PB","111",hotel);
@@ -31,7 +31,7 @@ public class EmployeeAndOrderTest {
 
     @Test
     public void testRemovingUnknownEmployeeDoesNotChangeCount() {
-        var hotel = new Hotel("H","L","A","P",4,10,new HashSet<>());
+        var hotel = new Hotel("H","L","A","P",4,10);
         var cook = new Cook("c3","C","S",LocalDateTime.now(),"PB","000",hotel);
         hotel.addEmployee(cook);
 
@@ -43,7 +43,7 @@ public class EmployeeAndOrderTest {
 
     @Test
     public void testAddingSameEmployeeInstanceTwiceIsNotDuplicated() {
-        var hotel = new Hotel("H","L","A","P",4,10,new HashSet<>());
+        var hotel = new Hotel("H","L","A","P",4,10);
         var cook = new Cook("c4","C","S",LocalDateTime.now(),"PB","000",hotel);
 
         hotel.addEmployee(cook);
@@ -54,21 +54,21 @@ public class EmployeeAndOrderTest {
 
     @Test
     public void testCountEmployeesByMissingJobReturnsZero() {
-        var hotel = new Hotel("H","L","A","P",4,10,new HashSet<>());
+        var hotel = new Hotel("H","L","A","P",4,10);
 
         assertEquals(0, hotel.countEmployeesByJob(Job.GUARD));
     }
 
     @Test
     public void testOrderStatusTransitions() {
-        var hotel = new Hotel("H","L","A","P",4,10,null);
+        var hotel = new Hotel("H","L","A","P",4,10);
         var room = new StandardRoom();
         hotel.addRoom(room);
         var guest = new Guest("g9","Anna");
         hotel.register(guest);
         hotel.book(guest, room);
 
-        var order = new Order("o9", guest, room, java.util.List.of("item1"));
+        var order = new Order("o9", guest, room, java.util.List.of(new OrderItem("item1", 5.0)));
         assertEquals(OrderStatus.PLACED, order.getStatus());
 
         var cook = new Cook("c9","Chef","X",LocalDateTime.now(),"PB","000",hotel);
@@ -88,7 +88,7 @@ public class EmployeeAndOrderTest {
 
     @Test
     public void testDeliveredAtIsOnlySetWhenDelivered() {
-        var order = new Order("o10", new Guest("g10","Anna"), new StandardRoom(), java.util.List.of("item1"));
+        var order = new Order("o10", new Guest("g10","Anna"), new StandardRoom(), java.util.List.of(new OrderItem("item1", 5.0)));
 
         order.setStatus(OrderStatus.PREPARING);
         order.setStatus(OrderStatus.READY);

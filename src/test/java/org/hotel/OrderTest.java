@@ -1,17 +1,23 @@
 package org.hotel;
 
 import org.junit.jupiter.api.Test;
+import org.hotel.order.OrderItem;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OrderTest {
 
+    private static final OrderItem ITEM = new OrderItem("x", 5.0);
+    private static final OrderItem ITEM_Y = new OrderItem("y", 3.0);
+
     @Test
     public void testOrderStatusSetters() {
-        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var hotel = new Hotel("H","L","A","P",4,5);
         var room = new StandardRoom();
         var guest = new Guest("g4","Lee");
-        var order = new Order("o1", guest, room, java.util.List.of("x"));
+        var order = new Order("o1", guest, room, List.of(ITEM));
         assertEquals(OrderStatus.PLACED, order.getStatus());
         order.setStatus(OrderStatus.PREPARING);
         assertEquals(OrderStatus.PREPARING, order.getStatus());
@@ -26,7 +32,7 @@ public class OrderTest {
     public void testOrderConstructorStoresInitialData() {
         var guest = new Guest("g5","Lee");
         var room = new StandardRoom();
-        java.util.List<String> items = java.util.List.of("x", "y");
+        var items = List.of(ITEM, ITEM_Y);
 
         var order = new Order("o2", guest, room, items);
 
@@ -39,7 +45,7 @@ public class OrderTest {
 
     @Test
     public void testNonDeliveredStatusesDoNotSetDeliveredAt() {
-        var order = new Order("o3", new Guest("g6","Lee"), new StandardRoom(), java.util.List.of("x"));
+        var order = new Order("o3", new Guest("g6","Lee"), new StandardRoom(), List.of(ITEM));
 
         order.setStatus(OrderStatus.PREPARING);
         order.setStatus(OrderStatus.READY);
@@ -49,7 +55,7 @@ public class OrderTest {
 
     @Test
     public void testEmptyItemsOrderIsAccepted() {
-        var order = new Order("o4", new Guest("g7","Lee"), new StandardRoom(), java.util.List.of());
+        var order = new Order("o4", new Guest("g7","Lee"), new StandardRoom(), List.of());
 
         assertTrue(order.getItems().isEmpty());
         assertEquals(OrderStatus.PLACED, order.getStatus());
@@ -57,8 +63,8 @@ public class OrderTest {
 
     @Test
     public void testSetPreparedAndDeliveredByStoreEmployees() {
-        var hotel = new Hotel("H","L","A","P",4,5,null);
-        var order = new Order("o5", new Guest("g8","Lee"), new StandardRoom(), java.util.List.of("x"));
+        var hotel = new Hotel("H","L","A","P",4,5);
+        var order = new Order("o5", new Guest("g8","Lee"), new StandardRoom(), List.of(ITEM));
         var cook = new Cook("c5","Chef","A", java.time.LocalDateTime.now(), "PB", "000", hotel);
         var waiter = new Waiter("s5","Server","A", java.time.LocalDateTime.now(), "PB", "111", hotel);
 
@@ -71,7 +77,7 @@ public class OrderTest {
 
     @Test
     public void testIsActiveForNonFinalStatuses() {
-        var order = new Order("o8", new Guest("g11", "Lee"), new StandardRoom(), java.util.List.of("x"));
+        var order = new Order("o8", new Guest("g11", "Lee"), new StandardRoom(), List.of(ITEM));
         assertTrue(order.isActive());
         order.setStatus(OrderStatus.PREPARING);
         assertTrue(order.isActive());
@@ -81,14 +87,14 @@ public class OrderTest {
 
     @Test
     public void testIsActiveFalseAfterDelivered() {
-        var order = new Order("o9", new Guest("g12", "Lee"), new StandardRoom(), java.util.List.of("x"));
+        var order = new Order("o9", new Guest("g12", "Lee"), new StandardRoom(), List.of(ITEM));
         order.setStatus(OrderStatus.DELIVERED);
         assertFalse(order.isActive());
     }
 
     @Test
     public void testIsActiveFalseAfterCancelled() {
-        var order = new Order("o10", new Guest("g13", "Lee"), new StandardRoom(), java.util.List.of("x"));
+        var order = new Order("o10", new Guest("g13", "Lee"), new StandardRoom(), List.of(ITEM));
         order.cancel();
         assertFalse(order.isActive());
         assertEquals(OrderStatus.CANCELLED, order.getStatus());
@@ -96,21 +102,21 @@ public class OrderTest {
 
     @Test
     public void testCancelThrowsWhenAlreadyDelivered() {
-        var order = new Order("o11", new Guest("g14", "Lee"), new StandardRoom(), java.util.List.of("x"));
+        var order = new Order("o11", new Guest("g14", "Lee"), new StandardRoom(), List.of(ITEM));
         order.setStatus(OrderStatus.DELIVERED);
         assertThrows(IllegalStateException.class, order::cancel);
     }
 
     @Test
     public void testGetElapsedTimeBeforeDeliveryIsPositive() {
-        var order = new Order("o12", new Guest("g15", "Lee"), new StandardRoom(), java.util.List.of("x"));
+        var order = new Order("o12", new Guest("g15", "Lee"), new StandardRoom(), List.of(ITEM));
         java.time.Duration elapsed = order.getElapsedTime();
         assertFalse(elapsed.isNegative());
     }
 
     @Test
     public void testGetElapsedTimeAfterDeliveryIsFixed() throws InterruptedException {
-        var order = new Order("o13", new Guest("g16", "Lee"), new StandardRoom(), java.util.List.of("x"));
+        var order = new Order("o13", new Guest("g16", "Lee"), new StandardRoom(), List.of(ITEM));
         order.setStatus(OrderStatus.DELIVERED);
         java.time.Duration elapsedFirst = order.getElapsedTime();
         Thread.sleep(50);

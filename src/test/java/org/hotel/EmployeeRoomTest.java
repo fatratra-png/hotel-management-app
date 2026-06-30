@@ -1,6 +1,7 @@
 package org.hotel;
 
 import org.junit.jupiter.api.Test;
+import org.hotel.order.OrderItem;
 
 import java.time.LocalDateTime;
 
@@ -10,7 +11,7 @@ public class EmployeeRoomTest {
 
     @Test
     public void testEmployeeSalaryCalculationsAndWork() {
-        var hotel = new Hotel("H","L","A","P",5,10,null);
+        var hotel = new Hotel("H","L","A","P",5,10);
         var m = new Manager("m1","M","N",LocalDateTime.now(),"PB","000",hotel);
         assertEquals(8, m.countWorkHour());
         assertTrue(m.work().contains("manager"));
@@ -31,7 +32,7 @@ public class EmployeeRoomTest {
 
     @Test
     public void testSalaryCalculationWithZeroHours() {
-        var hotel = new Hotel("H","L","A","P",5,10,null);
+        var hotel = new Hotel("H","L","A","P",5,10);
         var manager = new Manager("m2","M","N",LocalDateTime.now(),"PB","000",hotel);
 
         assertEquals(0, manager.countSalaryByHour(10, 0));
@@ -40,7 +41,7 @@ public class EmployeeRoomTest {
 
     @Test
     public void testNetSalaryWithFullDeductionRate() {
-        var hotel = new Hotel("H","L","A","P",5,10,null);
+        var hotel = new Hotel("H","L","A","P",5,10);
         var manager = new Manager("m3","M","N",LocalDateTime.now(),"PB","000",hotel);
         manager.countSalaryByHour(25, 4);
 
@@ -59,12 +60,12 @@ public class EmployeeRoomTest {
 
         var r = new StandardRoom();
         var guest = new Guest("g2","Bob");
-        var hotel = new Hotel("H","L","A","P",4,5,null);
+        var hotel = new Hotel("H","L","A","P",4,5);
         hotel.addRoom(r);
         hotel.register(guest);
         hotel.book(guest, r);
 
-        var o = new Order("id", guest, r, java.util.List.of("x"));
+        var o = new Order("id", guest, r, java.util.List.of(new OrderItem("x", 5.0)));
         r.receiveDelivery(o);
         assertTrue(r.getDeliveries().contains(o));
     }
@@ -73,8 +74,8 @@ public class EmployeeRoomTest {
     public void testRoomCanReceiveMultipleDeliveriesInOrder() {
         var room = new StandardRoom();
         var guest = new Guest("g3","Bob");
-        var first = new Order("first", guest, room, java.util.List.of("water"));
-        var second = new Order("second", guest, room, java.util.List.of("tea"));
+        var first = new Order("first", guest, room, java.util.List.of(new OrderItem("water", 5.0)));
+        var second = new Order("second", guest, room, java.util.List.of(new OrderItem("tea", 5.0)));
 
         room.receiveDelivery(first);
         room.receiveDelivery(second);
